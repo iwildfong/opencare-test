@@ -1,0 +1,69 @@
+<h2><input ng-model="profile.name" ng-readonly="!editing" placeholder="Name"></h2>
+<button id="edit" ng-if="!editing" ng-click="toggleEdit()">Edit</button>
+<button id="done" ng-if="editing" ng-click="toggleEdit()">Done</button>
+
+<form>
+   <label><span>Specialties:</span></label>
+   <ul id="specialties">
+      <li ng-repeat="specialty in profile.specialties track by $index">
+         <span ng-if="!editing">{{specialty.value}}</span>
+         <input ng-model="specialty.value" ng-if="editing">
+         <button ng-if="editing" ng-click="removeSpecialty($index)">Delete</button>
+      </li>
+   </ul>
+   <button id="addSpecialty" ng-if="editing" ng-click="addSpecialty()">Add</button>
+
+   <label><span>Languages Spoken:</span></label>
+   <ul id="languages">
+      <li ng-repeat="language in profile.languages track by $index">
+         <span ng-if="!editing">{{language.value}}</span>
+         <input ng-model="language.value" ng-if="editing">
+         <button ng-if="editing" ng-click="removeLanguage($index)">Delete</button>
+      </li>
+   </ul>
+   <button id="addLanguage" ng-if="editing" ng-click="addLanguage()">Add</button>
+
+   <label><span>About:</span></label>
+   <div id="info">
+      <span ng-if="!editing">{{profile.info}}</span>
+      <textarea ng-model="profile.info" ng-if="editing" placeholder="About...">
+      </textarea>
+   </div>
+
+   <label><span>Contact:</span></label>
+   <div id="street">
+      <span ng-if="!editing">{{profile.address.street}}</span>
+      <span ng-if="editing">Street: </span>
+      <input ng-model="profile.address.street" ng-if="editing">
+   </div>
+   <div id="city">
+      <span ng-if="!editing">{{profile.address.city}}</span>
+      <span ng-if="editing">City: </span>
+      <input ng-model="profile.address.city" ng-if="editing">
+   </div>
+   <div id="province">
+      <span ng-if="!editing">{{profile.address.province}}</span>
+      <span ng-if="editing">State/Province: </span>
+      <input ng-model="profile.address.province" ng-if="editing">
+   </div>
+   <div id="phone">
+      <span ng-if="!editing">{{profile.address.phone}}</span>
+      <span ng-if="editing">Phone #: </span>
+      <input ng-model="profile.address.phone" ng-if="editing">
+   </div>
+
+   <label><span>Hours:</span></label>
+   <ul id="hours">
+      <li ng-repeat="day in profile.available">
+         <span id="day">
+            {{['Mon','Tues','Wed','Thurs','Fri','Sat','Sun'][day.dayOfWeek]}}:
+         </span>
+         <span ng-if="!editing">{{day.open}}</span>
+         <input ng-model="day.open" ng-if="editing">
+         <span> - </span>
+         <span ng-if="!editing">{{day.close}}</span>
+         <input ng-model="day.close" ng-if="editing">
+      </li>
+   </ul>
+   
+</form>

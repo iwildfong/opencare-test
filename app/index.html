@@ -2,21 +2,18 @@
 <html lang="en" ng-app="opencare">
 <head>
   <meta charset="utf-8">
-  <title>My AngularJS App</title>
+  <title>OpenCare</title>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body ng-cloak-auth class="hide">
 
-  <ul class="menu">
-    <li><a href="#/home">home</a></li>
-    <li><a href="#/chat">chat</a></li>
-    <li ng-show-auth="logout"><a href="#/login">login</a></li>
-    <li ng-show-auth="login"><a href="#/account">account</a></li>
+  <ul class="menu" ng-show-auth="login">
+    <li><a href="#/profile">profile</a></li>
+    <li><a href="#/schedule">schedule</a></li>
+    <li><a href="#/account">account</a></li>
   </ul>
 
   <div ng-view></div>
-
-  <div>AngularFire-seed v<span app-version></span></div>
 
   <script src="http://static.firebase.com/v0/firebase.js"></script>
   <script src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>

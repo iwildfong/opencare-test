@@ -3,24 +3,52 @@
 /* Controllers */
 
 angular.module('opencare.controllers', [])
-   .controller('HomeCtrl', ['$scope', 'syncData', function($scope, syncData) {
-      syncData('syncedValue').$bind($scope, 'syncedValue');
+
+   .controller('ProfileCtrl', ['$scope', 'syncData', function($scope, syncData) {
+      syncData(['profiles', $scope.auth.user.uid]).$bind($scope, 'profile');
+
+      $scope.editing = false;
+
+      $scope.addSpecialty = function() {
+         if ( !$scope.profile.specialties ) { $scope.profile.specialties = []; }
+         $scope.profile.specialties.push({value:''});
+      };
+
+      $scope.removeSpecialty = function(idx) {
+         $scope.profile.specialties.splice(idx,1);
+      };
+
+      $scope.addLanguage = function() {
+         if ( !$scope.profile.languages ) { $scope.profile.languages = []; }
+         $scope.profile.languages.push({value:''});
+      };
+
+      $scope.removeLanguage = function(idx) {
+         $scope.profile.languages.splice(idx,1);
+      };
+
+      $scope.resetHours = function() { 
+         $scope.profile.available = [
+            { "dayOfWeek": 0, "open": "closed", "close": "closed" }
+         ,  { "dayOfWeek": 1, "open": "closed", "close": "closed" }
+         ,  { "dayOfWeek": 2, "open": "closed", "close": "closed" }
+         ,  { "dayOfWeek": 3, "open": "closed", "close": "closed" }
+         ,  { "dayOfWeek": 4, "open": "closed", "close": "closed" }
+         ,  { "dayOfWeek": 5, "open": "closed", "close": "closed" }
+         ,  { "dayOfWeek": 6, "open": "closed", "close": "closed" }
+         ];
+      }
+
+      $scope.toggleEdit = function() {
+         $scope.editing = !$scope.editing;
+
+         if ( !$scope.profile.available ) { $scope.resetHours(); }
+      };
+
    }])
 
-  .controller('ChatCtrl', ['$scope', 'syncData', function($scope, syncData) {
-      $scope.newMessage = null;
-
-      // constrain number of messages by limit into syncData
-      // add the array into $scope.messages
-      $scope.messages = syncData('messages', 10);
-
-      // add new messages to the list
-      $scope.addMessage = function() {
-         if( $scope.newMessage ) {
-            $scope.messages.$add({text: $scope.newMessage});
-            $scope.newMessage = null;
-         }
-      };
+   .controller('ScheduleCtrl', ['$scope', 'syncData', function($scope, syncData) {
+      $scope.schedule = null;
    }])
 
    .controller('LoginCtrl', ['$scope', 'loginService', '$location', function($scope, loginService, $location) {
@@ -31,7 +59,7 @@ angular.module('opencare.controllers', [])
 
       $scope.$on('$firebaseAuth:login', function() {
          $location.replace();
-         $location.path('/account');
+         $location.path('/profile');
       });
 
       $scope.login = function(cb) {

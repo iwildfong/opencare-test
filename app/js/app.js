@@ -7,14 +7,16 @@ angular.module('opencare',
 
    // configure views; note the authRequired parameter for authenticated pages
    .config(['$routeProvider', function($routeProvider) {
-      $routeProvider.when('/home', {
-         templateUrl: 'partials/home.html',
-         controller: 'HomeCtrl'
+      $routeProvider.when('/profile', {
+         authRequired: true,
+         templateUrl: 'partials/profile.html',
+         controller: 'ProfileCtrl'
       });
 
-      $routeProvider.when('/chat', {
-         templateUrl: 'partials/chat.html',
-         controller: 'ChatCtrl'
+      $routeProvider.when('/schedule', {
+         authRequired: true,
+         templateUrl: 'partials/schedule.html',
+         controller: 'ScheduleCtrl'
       });
 
       $routeProvider.when('/account', {
@@ -28,21 +30,12 @@ angular.module('opencare',
          controller: 'LoginCtrl'
       });
 
-      $routeProvider.otherwise({redirectTo: '/home'});
+      $routeProvider.otherwise({redirectTo: '/login'});
    }])
 
 
    // establish authentication
    .run(['loginService', '$rootScope', 'FBURL', function(loginService, $rootScope, FBURL) {
-      if( FBURL === 'https://INSTANCE.firebaseio.com' ) {
-         // double-check that the app has been configured
-         angular.element(document.body).html('<h1>Please configure app/js/config.js before running!</h1>');
-         setTimeout(function() {
-            angular.element(document.body).removeClass('hide');
-         }, 250);
-      }
-      else {
-         $rootScope.auth = loginService.init('/login');
-         $rootScope.FBURL = FBURL;
-      }
+      $rootScope.auth = loginService.init('/login');
+      $rootScope.FBURL = FBURL;
    }]);
