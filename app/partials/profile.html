@@ -1,4 +1,5 @@
-<h2><input ng-model="profile.name" ng-readonly="!editing" placeholder="Name"></h2>
+<h2 ng-if="!editing">{{profile.name}}</h2>
+<div><input ng-model="profile.name" ng-if="editing" placeholder="Name"></div>
 <button id="edit" ng-if="!editing" ng-click="toggleEdit()">Edit</button>
 <button id="done" ng-if="editing" ng-click="toggleEdit()">Done</button>
 
@@ -58,11 +59,17 @@
          <span id="day">
             {{['Mon','Tues','Wed','Thurs','Fri','Sat','Sun'][day.dayOfWeek]}}:
          </span>
-         <span ng-if="!editing">{{day.open}}</span>
-         <input ng-model="day.open" ng-if="editing">
-         <span> - </span>
-         <span ng-if="!editing">{{day.close}}</span>
-         <input ng-model="day.close" ng-if="editing">
+         <span ng-if="!editing">
+            <span ng-if="!day.closed">{{day.start | date: 'h:mm a'}} - {{day.end | date: 'h:mm a'}}</span>
+            <span ng-if="day.closed">closed</span>
+         </span>
+         <span ng-if="editing">
+            <input type="time" ng-model="day.start" ng-readonly="day.closed">
+            <span> - </span>
+            <input type="time" ng-model="day.end" ng-if="editing" ng-readonly="day.closed">
+            <span>CLOSED: </span> 
+            <input type="checkbox" ng-model="day.closed" ng-if="editing" ng-click="toggleClosed(day)">
+         </span>
       </li>
    </ul>
    
