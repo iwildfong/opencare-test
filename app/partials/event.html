@@ -1,0 +1,19 @@
+<div ng-model="currentEvent">
+   <div class="modal-header">
+      <span>Appointment for: {{currentEvent.title}} on {{currentEvent.start | date:'MMMd, yyyy @ h:mm a'}}</span>
+      <button class="btn btn-primary right" ng-if="currentEvent.state === 'approved'" ng-click="removeAppointment()">Remove</button>
+      <button class="btn btn-primary right" ng-if="currentEvent.state === 'dr_pending'" ng-click="approveAppointment()">Approve</button>
+   </div>
+   <div class="modal-body">
+      <div class="inline" ng-model="currentEvent.start">
+         <datepicker show-weeks="false"></datepicker>
+      </div>
+      <div class="inline" ng-model="currentEvent.start">
+         <timepicker hour-step="1" minute-step="30" show-meridian="true"></timepicker>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+      <button class="btn btn-primary" ng-click="updateAppointment()">Update</button>
+   </div>
+</div>

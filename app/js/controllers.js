@@ -27,21 +27,24 @@ angular.module('opencare.controllers', [])
          $scope.profile.languages.splice(idx,1);
       };
 
+      var DEFAULT_START = (new Date()).setHours(9,0,0,0);
+      var DEFAULT_END = (new Date()).setHours(17,0,0,0);
+
       $scope.resetHours = function() { 
          $scope.profile.available = [
-            { "dayOfWeek": 0, "start": "", "end": "", "closed" : true }
-         ,  { "dayOfWeek": 1, "start": "", "end": "", "closed" : true }
-         ,  { "dayOfWeek": 2, "start": "", "end": "", "closed" : true }
-         ,  { "dayOfWeek": 3, "start": "", "end": "", "closed" : true }
-         ,  { "dayOfWeek": 4, "start": "", "end": "", "closed" : true }
-         ,  { "dayOfWeek": 5, "start": "", "end": "", "closed" : true }
-         ,  { "dayOfWeek": 6, "start": "", "end": "", "closed" : true }
+            { "dayOfWeek": 0, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
+         ,  { "dayOfWeek": 1, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
+         ,  { "dayOfWeek": 2, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
+         ,  { "dayOfWeek": 3, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
+         ,  { "dayOfWeek": 4, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
+         ,  { "dayOfWeek": 5, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
+         ,  { "dayOfWeek": 6, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
          ];
       }
 
       $scope.toggleClosed = function(day) {
-         day.start = "";
-         day.end = "";
+         day.start = DEFAULT_START;
+         day.end = DEFAULT_END;
       }
 
       $scope.toggleEdit = function() {
@@ -52,7 +55,31 @@ angular.module('opencare.controllers', [])
 
    }])
 
-   .controller('ScheduleCtrl', ['$scope', 'syncData', 'eventService', '$timeout', function($scope, syncData, eventService, $timeout) {
+   .controller('EventCtrl', ['$scope', '$modalInstance', 'currentEvent', 'approveAppointment', 'removeAppointment', 'updateAppointment', function($scope, $modalInstance, currentEvent, approveAppointment, removeAppointment, updateAppointment) {
+
+      // set currentEvent to be a copy of the appointment so that changes aren't finalized
+      // until the user presses the "done" button
+      $scope.currentEvent = angular.copy(currentEvent);
+
+      $scope.cancel = function() {
+         $modalInstance.dismiss();
+      }
+
+      // pass back the event to the ScheduleCtrl:
+      $scope.approveAppointment = function() {
+         $modalInstance.close(approveAppointment(currentEvent));
+      };
+
+      $scope.removeAppointment = function() {
+         $modalInstance.close(removeAppointment(currentEvent));
+      };
+
+      $scope.updateAppointment = function() {
+         $modalInstance.close(updateAppointment($scope.currentEvent,currentEvent));
+      };
+   }])
+
+   .controller('ScheduleCtrl', ['$scope', 'syncData', 'eventService', '$timeout', '$modal', function($scope, syncData, eventService, $timeout, $modal) {
       // assume all appointments are one hour to make life easier:
       $scope.DEFAULT_DURATION = 1000 * 60 * 60;
 
@@ -64,32 +91,25 @@ angular.module('opencare.controllers', [])
 
       $scope.events = eventService.events();
 
-      $scope.currentEvent = null;
-
-      $scope.saveEvent = function(e,k) {
-         $scope.appointments.$save(k);
-         var theEvent = eventService.updateEvent(e,k);
+      $scope.saveEvent = function(e) {
+         $scope.appointments.$save(e.$id);
+         var theEvent = eventService.updateEvent(e);
          $scope.calendar.fullCalendar('updateEvent',theEvent);
       };
 
-      $scope.approveAppointment = function(key) {
-         var appt = $scope.appointments[key];
+      $scope.approveAppointment = function(appt) {
          appt.state = 'approved';
-         $scope.saveEvent(appt,key);
-         $timeout(function(){$scope.setCurrentEvent(null);});
+         $scope.saveEvent(appt);
       };
 
-      $scope.removeAppointment = function(key) {
-         var appt = $scope.appointments[key];
+      $scope.removeAppointment = function(appt) {
          appt.state = 'dr_pending';
-         $scope.saveEvent(appt,key);
-         $timeout(function(){$scope.setCurrentEvent(null);});
+         $scope.saveEvent(appt);
       };
 
-      $scope.updateAppointment = function(key) {
-         var appt = $scope.appointments[key];
+      $scope.updateAppointment = function(evt,appt) {
          var oldD = new Date(appt.start);
-         var newD = new Date($scope.currentEvent.start);
+         var newD = new Date(evt.start);
 
          // only send to patient if user actually changed something:
          if ( oldD.getTime() !== newD.getTime() ) {
@@ -98,18 +118,23 @@ angular.module('opencare.controllers', [])
             appt.end = new Date(appt.start.getTime() + $scope.DEFAULT_DURATION);
             $scope.saveEvent(appt);
          }
-         $timeout(function(){$scope.setCurrentEvent(null);});
       };
 
-      $scope.setCurrentEvent = function(appt) {
-         $scope.currentEvent = ( angular.isObject(appt) ) ? angular.copy(appt) : null;
+      $scope.editAppointment = function(appt) {
+         var modal = $modal.open({
+            templateUrl: 'partials/event.html'
+         ,  controller: 'EventCtrl'
+         ,  resolve: {
+               currentEvent: function() { return appt; }
+            ,  approveAppointment: function() { return $scope.approveAppointment; }
+            ,  removeAppointment: function() { return $scope.removeAppointment; }
+            ,  updateAppointment: function() { return $scope.updateAppointment; }
+            }
+         });
       };
 
       $scope.handleEventClick = function(evt,jsEvent,view) {
-         var appt = $scope.appointments[evt.key];
-         // set currentEvent to be a copy of the appointment so that changes aren't finalized
-         // until the user presses the "update" button
-         $timeout(function(){$scope.setCurrentEvent(appt);});
+         $scope.editAppointment($scope.appointments[evt.key]);
       };
 
       $scope.handleDayClick = function(day,allDay,jsEvent,view) {

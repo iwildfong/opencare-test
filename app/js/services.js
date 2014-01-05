@@ -68,8 +68,8 @@
             return {};
          }
 
-         function updateEvent(obj,key) {
-            var e = eventForKey(key);
+         function updateEvent(obj) {
+            var e = eventForKey(obj.$id);
             if ( e ) {
                e.start = new Date(obj.start);
                e.end = new Date(obj.end);

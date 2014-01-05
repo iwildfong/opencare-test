@@ -2,7 +2,7 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('opencare',
-      ['opencare.config', 'opencare.filters', 'opencare.services', 'opencare.directives', 'opencare.controllers', 'firebase', 'ngRoute', 'waitForAuth', 'ui.calendar']
+      ['opencare.config', 'opencare.filters', 'opencare.services', 'opencare.directives', 'opencare.controllers', 'firebase', 'ngRoute', 'waitForAuth', 'ui.calendar', 'ui.bootstrap']
    )
 
    // configure views; note the authRequired parameter for authenticated pages
