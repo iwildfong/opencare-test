@@ -43,9 +43,10 @@
             this.title = v.title;
             this.start = new Date(v.start);
             this.end = new Date(v.end);
-            this.className = v.className;
+            this.state = v.state;
             this.allDay = false
             this.key = k;
+            this.conflict = false;
          }
 
          function keyInEvents(k) {
@@ -72,10 +73,32 @@
             if ( e ) {
                e.start = new Date(obj.start);
                e.end = new Date(obj.end);
-               e.className = obj.className;
+               e.state = obj.state;
+               checkForConflict(e);
                return e;
             }
             return {};
+         }
+
+         function checkForConflict(e) {
+            var s1 = e.start.getTime();
+            var e1 = e.end.getTime();
+
+            e.conflict = false;
+
+            for ( var i = 0; i < events.length; i++ ) {
+               if ( events[i] === e ) { continue; }
+               var s2 = events[i].start.getTime();
+               var e2 = events[i].end.getTime();
+               
+               // if app1 starts after app2, but before app2 finishes
+               // OR 
+               // app1 finishes after app2, but starts before app2 finishes
+               if ( ( s1 >= s2 && s1 < e2 ) || ( e1 > s2 && s1 < e2 ) ) {
+                  e.conflict = true;
+                  break;
+               }
+            }
          }
 
          function setEvents(list) {
@@ -97,6 +120,10 @@
                   }
                }
             });
+
+            for ( var i = 0; i < events.length; i++ ) {
+               checkForConflict(events[i]);
+            }
 
             return events;
          }

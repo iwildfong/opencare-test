@@ -1,19 +1,19 @@
-<h2>Pending Appointment Requests:</h2>
+<h2>Appointment Requests:</h2>
 
 <ul id="requests">
-   <li ng-repeat="(key, appt) in appointments | orderByPriority | filter:'dr_pending'">
-      <span>{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
-      <button ng-click="approveAppointment(appt,key)">Approve</button>
+   <li ng-repeat="appt in appointments | orderByPriority | orderBy:'start' | filter:'dr_pending'">
+      <span class="{{appt.state}}">{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
+      <button ng-click="approveAppointment(appt.$id)">Approve</button>
    </li>
 </ul>
 
-<h2>Scheduled Appointments:</h2>
+<div style="width: 760px" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="calendar" calendar-watch-extra="eventState" calendar-watch-extra="eventConflict"></div>
 
-<ul id="requests">
-   <li ng-repeat="(key, appt) in appointments | orderByPriority | filter:'approved'">
-      <span>{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
-      <button ng-click="removeAppointment(appt,key)">Remove</button>
-   </li>
-</ul>
-
-<div style="width: 760px" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="calendar"></div>
+<div ng-if="currentEvent" ng-model="currentEvent">
+   <span>Appointment for: {{currentEvent.title}}</span>
+   <label>@</label>
+   <input type="text" ng-model="currentEvent.start">
+   <button ng-if="currentEvent.state === 'approved'" ng-click="removeAppointment(currentEvent.$id)">Remove</button>
+   <button ng-if="currentEvent.state === 'dr_pending'" ng-click="approveAppointment(currentEvent.$id)">Approve</button>
+   <button ng-click="updateAppointment(currentEvent.$id)">Done</button>
+</div>
