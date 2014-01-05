@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <title>OpenCare</title>
   <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.css" />
+  <link rel="stylesheet" media="print" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.print.css" />
 </head>
 <body ng-cloak-auth class="hide">
 
@@ -15,11 +17,14 @@
 
   <div ng-view></div>
 
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
   <script src="http://static.firebase.com/v0/firebase.js"></script>
   <script src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-route.js"></script>
   <script src="https://cdn.firebase.com/libs/angularfire/0.5.0/angularfire.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/config.js"></script>
   <script src="js/services.js"></script>
@@ -27,5 +32,6 @@
   <script src="js/filters.js"></script>
   <script src="js/directives.js"></script>
   <script src="js/module.waitForAuth.js"></script>
+  <script src="js/module.calendar.js"></script>
 </body>
 </html>
