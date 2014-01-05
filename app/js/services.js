@@ -34,6 +34,84 @@
          }
       }])
 
+      // simple service to map "appointment" objects from firebase to an array of "event" objects
+      // compatible with ui-calendar
+      .factory('eventService', ['$rootScope', function($rootScope) {
+         var events = [];
+
+         function Event(v,k){
+            this.title = v.title;
+            this.start = new Date(v.start);
+            this.end = new Date(v.end);
+            this.className = v.className;
+            this.allDay = false
+            this.key = k;
+         }
+
+         function keyInEvents(k) {
+            var idx = -1;
+            for ( var i = 0; i < events.length; i++ ) {
+               if ( events[i].key === k ) {
+                  idx = i;
+                  break;
+               }
+            }
+            return idx;
+         }
+
+         function eventForKey(key) {
+            var idx = keyInEvents(key);
+            if ( idx >= 0 ) {
+               return events[idx];
+            }
+            return {};
+         }
+
+         function updateEvent(obj,key) {
+            var e = eventForKey(key);
+            if ( e ) {
+               e.start = new Date(obj.start);
+               e.end = new Date(obj.end);
+               e.className = obj.className;
+               return e;
+            }
+            return {};
+         }
+
+         function setEvents(list) {
+            // remove any events that are no longer in list:
+            for ( var i = events.length-1; i >= 0; i-- ) {
+               if ( !list.hasOwnProperty(events[i].key) ) {
+                  events.splice(i,1);
+               }
+            }
+
+            // update events for each appointment in list:
+            angular.forEach(list,function(v,k){
+               if ( list.hasOwnProperty(k) && angular.isObject(v) ) {
+                  var idx = keyInEvents(k);
+                  if ( idx >= 0 ) {
+                     events[idx] = new Event(v,k); // replace existing event with updated one
+                  } else {
+                     events.push(new Event(v,k)); // add new event to list
+                  }
+               }
+            });
+
+            return events;
+         }
+
+         function getEvents() {
+            return events;
+         }
+
+         return {
+            events: getEvents
+         ,  updateEvent: updateEvent
+         ,  setEvents: setEvents
+         };
+      }])
+
       .factory('loginService', ['$rootScope', '$firebaseAuth', 'firebaseRef', 'profileCreator', '$timeout',
          function($rootScope, $firebaseAuth, firebaseRef, profileCreator, $timeout) {
             var auth = null;

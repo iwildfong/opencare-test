@@ -1,1 +1,19 @@
-TBD
+<h2>Pending Appointment Requests:</h2>
+
+<ul id="requests">
+   <li ng-repeat="(key, appt) in appointments | orderByPriority | filter:'dr_pending'">
+      <span>{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
+      <button ng-click="approveAppointment(appt,key)">Approve</button>
+   </li>
+</ul>
+
+<h2>Scheduled Appointments:</h2>
+
+<ul id="requests">
+   <li ng-repeat="(key, appt) in appointments | orderByPriority | filter:'approved'">
+      <span>{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
+      <button ng-click="removeAppointment(appt,key)">Remove</button>
+   </li>
+</ul>
+
+<div style="width: 760px" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="calendar"></div>
