@@ -4,6 +4,7 @@
    <li ng-repeat="appt in appointments | orderByPriority | orderBy:'start' | filter:'dr_pending'">
       <span class="{{appt.state}}">{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
       <button ng-click="approveAppointment(appt.$id)">Approve</button>
+      <button ng-click="setCurrentEvent(appt)">Suggest New Date/Time</button>
    </li>
 </ul>
 

@@ -76,14 +76,14 @@ angular.module('opencare.controllers', [])
          var appt = $scope.appointments[key];
          appt.state = 'approved';
          $scope.saveEvent(appt,key);
-         $timeout(function(){$scope.currentEvent = null;});
+         $timeout(function(){$scope.setCurrentEvent(null);});
       };
 
       $scope.removeAppointment = function(key) {
          var appt = $scope.appointments[key];
          appt.state = 'dr_pending';
          $scope.saveEvent(appt,key);
-         $timeout(function(){$scope.currentEvent = null;});
+         $timeout(function(){$scope.setCurrentEvent(null);});
       };
 
       $scope.updateAppointment = function(key) {
@@ -98,14 +98,18 @@ angular.module('opencare.controllers', [])
             appt.end = new Date(appt.start.getTime() + $scope.DEFAULT_DURATION);
             $scope.saveEvent(appt);
          }
-         $timeout(function(){$scope.currentEvent = null;});
+         $timeout(function(){$scope.setCurrentEvent(null);});
+      };
+
+      $scope.setCurrentEvent = function(appt) {
+         $scope.currentEvent = ( angular.isObject(appt) ) ? angular.copy(appt) : null;
       };
 
       $scope.handleEventClick = function(evt,jsEvent,view) {
          var appt = $scope.appointments[evt.key];
          // set currentEvent to be a copy of the appointment so that changes aren't finalized
          // until the user presses the "update" button
-         $timeout(function(){$scope.currentEvent = angular.copy(appt);})
+         $timeout(function(){$scope.setCurrentEvent(appt);});
       };
 
       $scope.handleDayClick = function(day,allDay,jsEvent,view) {
