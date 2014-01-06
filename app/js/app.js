@@ -18,13 +18,13 @@ angular.module('opencare',
          templateUrl: 'partials/schedule.html',
          controller: 'ScheduleCtrl'
       });
-
+/*
       $routeProvider.when('/account', {
          authRequired: true, // must authenticate before viewing this page
          templateUrl: 'partials/account.html',
          controller: 'AccountCtrl'
       });
-
+*/
       $routeProvider.when('/login', {
          templateUrl: 'partials/login.html',
          controller: 'LoginCtrl'
