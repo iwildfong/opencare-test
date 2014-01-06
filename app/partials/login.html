@@ -1,24 +1,34 @@
 
-<h2>Login Page</h2>
-
-<form>
-    <label>
-        <span>email</span>
-        <input type="text" ng-model="email" />
-    </label>
-    <label>
-        <span>password</span>
-        <input type="password" ng-model="pass" />
-    </label>
-    <label ng-cloak ng-show="createMode">
-        <span>confirm pass</span>
-        <input type="password" ng-model="confirm" />
-    </label>
-    <button ng-click="login()" ng-hide="createMode">Log In</button>
-    <button ng-click="createMode = true" ng-hide="createMode">Create Account</button>
-    <button ng-cloak ng-show="createMode" ng-click="createAccount()">Ready to Create</button>
-    <button ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
-
-    <p ng-show="err" class="error">{{err}}</p>
+<form class="login form-horizontal col-sm-offset-3" role="form">
+   <img src="http://opencare.com/common-assets/imgs/opencare-logo-500.png" />
+   <div class="form-group">
+      <label class="col-sm-2 control-label">Email</label>
+      <div class="col-sm-4">
+         <input type="text" class="form-control" placeholder="name@example.com" ng-model="email" />
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-sm-2 control-label">Password</label>
+      <div class="col-sm-4">
+         <input type="password" class="form-control" ng-model="pass" />
+      </div>
+   </div>
+   <div class="form-group" ng-cloak ng-show="createMode">
+      <label class="col-sm-2 control-label">Confirm Password</label>
+      <div class="col-sm-4">
+         <input type="password" class="form-control" ng-model="confirm" />
+      </div>
+   </div>
+   <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-4">
+         <button class="btn btn-primary" ng-click="login()" ng-hide="createMode">Log In</button>
+         <button class="btn btn-primary" ng-click="createMode = true" ng-hide="createMode">Create Account</button>
+         <button class="btn btn-primary" ng-cloak ng-show="createMode" ng-click="createAccount()">Ready to Create</button>
+         <button class="btn btn-primary" ng-cloak ng-show="createMode" ng-click="createMode = false">Cancel</button>
+      </div>
+   </div>
+   <div class="form-group" ng-show="err">
+      <alert class="col-sm-offset-2 col-sm-4 alert-danger" ng-show="err">{{err}}</alert>
+   </div>
 </form>
 

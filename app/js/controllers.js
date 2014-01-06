@@ -3,8 +3,22 @@
 /* Controllers */
 
 angular.module('opencare.controllers', [])
+   
+   .controller('MenuCtrl', ['$scope', 'loginService', '$location', function($scope, loginService, $location) {
 
-   .controller('ProfileCtrl', ['$scope', 'syncData', function($scope, syncData) {
+      $scope.activetab = function(route) {
+         return route === $location.path();
+      };
+
+      $scope.logout = function() {
+         loginService.logout();
+         $location.path('/login');
+      };
+
+   }])
+
+   .controller('ProfileCtrl', ['$scope', 'syncData', function($scope, syncData ) {
+
       syncData(['profiles', $scope.auth.user.uid]).$bind($scope, 'profile');
 
       $scope.editing = false;
@@ -80,6 +94,7 @@ angular.module('opencare.controllers', [])
    }])
 
    .controller('ScheduleCtrl', ['$scope', 'syncData', 'eventService', '$timeout', '$modal', function($scope, syncData, eventService, $timeout, $modal) {
+
       // assume all appointments are one hour to make life easier:
       $scope.DEFAULT_DURATION = 1000 * 60 * 60;
 
@@ -251,7 +266,8 @@ angular.module('opencare.controllers', [])
       };
    }])
 
-   .controller('AccountCtrl', ['$scope', 'loginService', 'syncData', '$location', function($scope, loginService, syncData, $location) {
+   .controller('AccountCtrl', ['$scope', 'loginService', 'syncData', '$location', function($scope, loginService, syncData, $location ) {
+
       syncData(['users', $scope.auth.user.uid]).$bind($scope, 'user');
 
       $scope.logout = function() {
