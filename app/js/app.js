@@ -30,7 +30,7 @@ angular.module('opencare',
          controller: 'LoginCtrl'
       });
 
-      $routeProvider.otherwise({redirectTo: '/login'});
+      $routeProvider.otherwise({redirectTo: '/profile'});
    }])
 
 
