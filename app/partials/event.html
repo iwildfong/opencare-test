@@ -1,8 +1,14 @@
 <div ng-model="currentEvent">
    <div class="modal-header">
-      <span>Appointment for: {{currentEvent.title}} on {{currentEvent.start | date:'MMMd, yyyy @ h:mm a'}}</span>
-      <button class="btn btn-primary right" ng-if="currentEvent.state === 'approved'" ng-click="removeAppointment()">Remove</button>
-      <button class="btn btn-primary right" ng-if="currentEvent.state === 'dr_pending'" ng-click="approveAppointment()">Approve</button>
+   <div class="row">
+      <h4 class="col-sm-10 control-label">
+         Appointment for: {{currentEvent.title}} on {{currentEvent.start | date:'MMMd, yyyy @ h:mm a'}}
+      </h4>
+      <div class="col-sm-2">
+      <button class="btn btn-danger" ng-if="currentEvent.state === 'approved'" ng-click="removeAppointment()">Remove</button>
+      <button class="btn btn-success" ng-if="currentEvent.state === 'dr_pending'" ng-click="approveAppointment()">Approve</button>
+      </div>
+   </div>
    </div>
    <div class="modal-body">
       <div class="inline" ng-model="currentEvent.start">
@@ -13,7 +19,7 @@
       </div>
    </div>
    <div class="modal-footer">
-      <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+      <button class="btn btn-default" ng-click="cancel()">Cancel</button>
       <button class="btn btn-primary" ng-click="updateAppointment()">Update</button>
    </div>
 </div>

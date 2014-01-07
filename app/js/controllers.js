@@ -17,7 +17,7 @@ angular.module('opencare.controllers', [])
 
    }])
 
-   .controller('ProfileCtrl', ['$scope', 'syncData', function($scope, syncData ) {
+   .controller('ProfileCtrl', ['$scope', 'syncData', '$modal', function($scope, syncData, $modal ) {
 
       syncData(['profiles', $scope.auth.user.uid]).$bind($scope, 'profile');
 
@@ -67,6 +67,36 @@ angular.module('opencare.controllers', [])
          if ( !angular.isObject($scope.profile.available) ) { $scope.resetHours(); }
       };
 
+      // use a modal for popover time picker since angular-ui popover doesn't support HTML content
+      // https://github.com/angular-ui/bootstrap/issues/220
+      $scope.timepicker = function(day,which) {
+         var modal = $modal.open({
+            templateUrl: 'partials/popoverTimepicker.html'
+         ,  controller: 'TimepickerCtrl'
+         ,  resolve: {
+               day: function() { return day; }
+            ,  timeToPick: function() { return which; }
+            }
+         });
+      }
+   }])
+
+   .controller('TimepickerCtrl', ['$scope', '$modalInstance', 'day', 'timeToPick', function($scope, $modalInstance, day, timeToPick ) {
+
+console.log(day);
+
+      $scope.modal = {
+         time: day[timeToPick]
+      };
+
+      $scope.cancel = function() {
+         $modalInstance.dismiss();
+      };
+
+      $scope.done = function() {
+         day[timeToPick] = $scope.modal.time;
+         $modalInstance.close(day);
+      };
    }])
 
    .controller('EventCtrl', ['$scope', '$modalInstance', 'currentEvent', 'approveAppointment', 'removeAppointment', 'updateAppointment', function($scope, $modalInstance, currentEvent, approveAppointment, removeAppointment, updateAppointment) {

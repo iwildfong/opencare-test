@@ -13,6 +13,7 @@
 .inline {
    display: table-cell;
    vertical-align: middle;
+   padding-right: 4px;
 }
 
 .right {
@@ -20,8 +21,8 @@
    float: right;
 }
 
-li {
-   list-style-type: none;
+.center-text {
+   text-align: center !important;
 }
 
 .main_header {
@@ -43,6 +44,11 @@ form.login {
    margin-top: 50px;
 }
 
+form.login img {
+   display: block;
+   margin: 0 auto;
+}
+
 form.profile {
    margin-top: 20px;
 }
@@ -50,4 +56,24 @@ form.profile {
 form.profile h1 {
    margin-top: 0;
    margin-bottom: 0;
+}
+
+form.profile .input-group {
+   margin: 4px 0;
+}
+
+.row > *
+, .form-group > *
+{
+/*
+border: 1px solid blue;
+*/
+}
+
+.container {
+   min-width: 1200px;
+}
+
+.timepicker {
+   margin: 0 auto;
 }
