@@ -204,12 +204,30 @@
       .factory('profileCreator', ['firebaseRef', '$timeout', function(firebaseRef, $timeout) {
          return function(id, email, callback) {
             firebaseRef('users/'+id).set({email: email, name: firstPartOfEmail(email)}, function(err) {
-               //err && console.error(err);
-               if( callback ) {
-                  $timeout(function() {
-                     callback(err);
-                  })
-               }
+
+               firebaseRef('profiles/'+id).set({
+                  name: firstPartOfEmail(email)
+               ,  info: ''
+               ,  specialties: []
+               ,  languages: []
+               ,  address: { street: '', city: '', province: '', phone: '' }
+               ,  available: [
+                     { "dayOfWeek": 0, "start": 0, "end": 0, "closed" : true }
+                  ,  { "dayOfWeek": 1, "start": 0, "end": 0, "closed" : true }
+                  ,  { "dayOfWeek": 2, "start": 0, "end": 0, "closed" : true }
+                  ,  { "dayOfWeek": 3, "start": 0, "end": 0, "closed" : true }
+                  ,  { "dayOfWeek": 4, "start": 0, "end": 0, "closed" : true }
+                  ,  { "dayOfWeek": 5, "start": 0, "end": 0, "closed" : true }
+                  ,  { "dayOfWeek": 6, "start": 0, "end": 0, "closed" : true }
+                  ]
+               }, function(err) {
+                  //err && console.error(err);
+                  if( callback ) {
+                     $timeout(function() {
+                        callback(err);
+                     })
+                  }
+               });
             });
 
             function firstPartOfEmail(email) {

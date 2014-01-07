@@ -18,7 +18,6 @@ angular.module('opencare.controllers', [])
    }])
 
    .controller('ProfileCtrl', ['$scope', 'syncData', '$modal', function($scope, syncData, $modal ) {
-
       syncData(['profiles', $scope.auth.user.uid]).$bind($scope, 'profile');
 
       $scope.editing = false;
@@ -41,30 +40,14 @@ angular.module('opencare.controllers', [])
          $scope.profile.languages.splice(idx,1);
       };
 
-      var DEFAULT_START = (new Date()).setHours(9,0,0,0);
-      var DEFAULT_END = (new Date()).setHours(17,0,0,0);
-
-      $scope.resetHours = function() { 
-         $scope.profile.available = [
-            { "dayOfWeek": 0, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ,  { "dayOfWeek": 1, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ,  { "dayOfWeek": 2, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ,  { "dayOfWeek": 3, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ,  { "dayOfWeek": 4, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ,  { "dayOfWeek": 5, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ,  { "dayOfWeek": 6, "start": DEFAULT_START, "end": DEFAULT_END, "closed" : true }
-         ];
-      }
-
       $scope.toggleClosed = function(day) {
-         day.start = DEFAULT_START;
-         day.end = DEFAULT_END;
+         // reset hours to 9am - 5pm
+         day.start = (new Date()).setHours(9,0,0,0);
+         day.end = (new Date()).setHours(17,0,0,0);
       }
 
       $scope.toggleEdit = function() {
          $scope.editing = !$scope.editing;
-
-         if ( !angular.isObject($scope.profile.available) ) { $scope.resetHours(); }
       };
 
       // use a modal for popover time picker since angular-ui popover doesn't support HTML content
