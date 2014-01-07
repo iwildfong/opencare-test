@@ -6,10 +6,12 @@ angular.module('opencare.controllers', [])
    
    .controller('MenuCtrl', ['$scope', 'loginService', '$location', function($scope, loginService, $location) {
 
+      // set active tab in menu based on current page
       $scope.activetab = function(route) {
          return route === $location.path();
       };
 
+      // logout on button click
       $scope.logout = function() {
          loginService.logout();
          $location.path('/login');
@@ -18,10 +20,13 @@ angular.module('opencare.controllers', [])
    }])
 
    .controller('ProfileCtrl', ['$scope', 'syncData', '$modal', function($scope, syncData, $modal ) {
+
+      // 3-way binding for profile data
       syncData(['profiles', $scope.auth.user.uid]).$bind($scope, 'profile');
 
       $scope.editing = false;
 
+      // add an empty specialty so the input field will appear
       $scope.addSpecialty = function() {
          if ( !$scope.profile.specialties ) { $scope.profile.specialties = []; }
          $scope.profile.specialties.push({value:''});
@@ -31,6 +36,7 @@ angular.module('opencare.controllers', [])
          $scope.profile.specialties.splice(idx,1);
       };
 
+      // add an empty language so the input field will appear
       $scope.addLanguage = function() {
          if ( !$scope.profile.languages ) { $scope.profile.languages = []; }
          $scope.profile.languages.push({value:''});
@@ -50,7 +56,7 @@ angular.module('opencare.controllers', [])
          $scope.editing = !$scope.editing;
       };
 
-      // use a modal for popover time picker since angular-ui popover doesn't support HTML content
+      // use a modal for popover timepicker since angular-ui popover doesn't support HTML content
       // https://github.com/angular-ui/bootstrap/issues/220
       $scope.timepicker = function(day,which) {
          var modal = $modal.open({
@@ -65,8 +71,6 @@ angular.module('opencare.controllers', [])
    }])
 
    .controller('TimepickerCtrl', ['$scope', '$modalInstance', 'day', 'timeToPick', function($scope, $modalInstance, day, timeToPick ) {
-
-console.log(day);
 
       $scope.modal = {
          time: day[timeToPick]
@@ -92,15 +96,17 @@ console.log(day);
          $modalInstance.dismiss();
       }
 
-      // pass back the event to the ScheduleCtrl:
+      // let ScheduleCtrl do the actual approving:
       $scope.approveAppointment = function() {
          $modalInstance.close(approveAppointment(currentEvent));
       };
 
+      // let ScheduleCtrl do the actual removing:
       $scope.removeAppointment = function() {
          $modalInstance.close(removeAppointment(currentEvent));
       };
 
+      // let ScheduleCtrl do the actual updating:
       $scope.updateAppointment = function() {
          $modalInstance.close(updateAppointment($scope.currentEvent,currentEvent));
       };
@@ -113,12 +119,16 @@ console.log(day);
 
       $scope.appointments = syncData(['appointments', $scope.auth.user.uid]);
 
+      // make sure the service's event list gets updated when appointments changes remotely
       $scope.appointments.$on('change',function(){
          eventService.setEvents($scope.appointments);
       });
 
+      // ui-calendar doesn't play nicely with firebase, so use an event service to generate the
+      // event list based on the appointments data
       $scope.events = eventService.events();
 
+      // save appointment to firebase and update the calendar UI
       $scope.saveEvent = function(e) {
          $scope.appointments.$save(e.$id);
          var theEvent = eventService.updateEvent(e);
@@ -148,6 +158,7 @@ console.log(day);
          }
       };
 
+      // open modal for editing date/time of an appointment:
       $scope.editAppointment = function(appt) {
          var modal = $modal.open({
             templateUrl: 'partials/event.html'
@@ -161,10 +172,12 @@ console.log(day);
          });
       };
 
+      // handle click on scheduled event from calendar UI
       $scope.handleEventClick = function(evt,jsEvent,view) {
          $scope.editAppointment($scope.appointments[evt.key]);
       };
 
+      // change to day view in calendar UI when click on day in month view:
       $scope.handleDayClick = function(day,allDay,jsEvent,view) {
          if ( view.name !== 'month' ) { return; }
          
@@ -172,12 +185,13 @@ console.log(day);
                         .fullCalendar('gotoDate',day);
       };
 
+      // make sure calendar events are styled according to their status:
       $scope.handleRenderEvent = function(evt,element) {
          var appt = $scope.appointments[evt.key];
          if ( !angular.isObject(appt) ) { return false; }
 
          // element has several classes associated with the calendar already, so rather than
-         // clobbering the class element, we remove all possible "special classes", then 
+         // clobbering the class attribute, we remove all possible "special classes", then 
          // reapply whatever classes are set for the given appointment
          var klass = ( evt.conflict ) ? 'conflict ' + appt.state : appt.state;
          element.removeClass('approved dr_pending patient_pending conflict')
@@ -187,6 +201,7 @@ console.log(day);
       // TODO: show current office hours on calendar?
       $scope.eventSources = [$scope.events];
 
+      // initialize calendar UI
       $scope.uiConfig = {
          calendar: {
             editable: false
