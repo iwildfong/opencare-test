@@ -1,9 +1,21 @@
-<ul id="requests">
-   <li ng-repeat="appt in appointments | orderByPriority | orderBy:'start' | filter:'dr_pending'">
-      <span class="{{appt.state}}">{{appt.title}} - {{appt.start | date: "MMM d, yyyy @ h:mm a"}}</span>
-      <button class="btn btn-primary" ng-click="approveAppointment(appt)">Approve</button>
-      <button class="btn btn-primary" ng-click="editAppointment(appt)">Suggest New Date/Time</button>
-   </li>
-</ul>
-
-<div style="width: 760px" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="calendar" calendar-watch-extra="eventState" calendar-watch-extra="eventConflict"></div>
+<div class="row">
+   <div class="col-xs-4">
+      <h4>New Appointments</h4>
+      <ul class="list-group">
+          <li class="list-group-item" ng-repeat="appt in filteredAppts = (appointments | orderByPriority | orderBy:'start' | filter:'dr_pending')">
+            <div class="{{appt.state}}">{{appt.title}}<br>{{appt.start | date: "MMM d, yyyy @ h:mm a"}}</div>
+            <button class="btn btn-success btn-sm" ng-click="approveAppointment(appt)">Approve</button>
+            <button class="btn btn-primary btn-sm" ng-click="editAppointment(appt)">New Time</button>
+         </li>
+      </ul>
+      <p ng-if="filteredAppts.length == 0">No new appointments</p>
+   </div>
+   <div class="col-xs-8">
+      <div class="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="calendar" calendar-watch-extra="eventState" calendar-watch-extra="eventConflict"></div>
+      <h4>Legend</h4>
+      <div class="legend"><span class="approved swatch"></span>approved</div>
+      <div class="legend"><span class="dr_pending swatch"></span>pending Dr. approval</div>
+      <div class="legend"><span class="patient_pending swatch"></span>pending patient approval</div>
+      <div class="legend"><span class="conflict swatch"></span>conflict</div>
+   </div>
+</div>

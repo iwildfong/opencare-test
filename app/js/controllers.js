@@ -182,18 +182,6 @@ console.log(day);
          var klass = ( evt.conflict ) ? 'conflict ' + appt.state : appt.state;
          element.removeClass('approved dr_pending patient_pending conflict')
                 .addClass(klass);
-
-         // TODO: remove this once the css has the necessary class definitions: 
-         if ( appt.state === 'approved' ) {
-            element.css('background-color','green');
-         } else if ( appt.state === 'dr_pending' ) {
-            element.css('background-color','orange');
-         } else if ( appt.state === 'patient_pending' ) {
-            element.css('background-color','grey');
-         }
-         if ( evt.conflict ) {
-            element.css('border-color','red');
-         }
       };
 
       // TODO: show current office hours on calendar?
