@@ -3,8 +3,10 @@ module.exports = function(config){
       basePath : '../',
 
       files : [
-         'app/lib/angular/angular.js',
-         'app/lib/angular/angular-*.js',
+         'http://static.firebase.com/v0/firebase.js',
+         'https://cdn.firebase.com/v0/firebase-simple-login.js',
+         'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.js',
+         'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular-route.js',
          'test/lib/angular/angular-mocks.js',
          'app/js/**/*.js',
          'test/unit/**/*.js'
