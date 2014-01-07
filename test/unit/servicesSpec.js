@@ -27,12 +27,13 @@ describe('service', function() {
          );
 
          it('should return user if $firebaseAuth.$login succeeds',
-            inject(function(loginService, $firebaseAuth, $rootScope, $q) {
+            inject(function(loginService, $firebaseAuth, $rootScope, $q, $timeout) {
                var cb = jasmine.createSpy();
                loginService.init('/login');
                $firebaseAuth.fns.$login.andReturn(resolve($q, {hello: 'world'}));
                loginService.login('test@test.com', '123', cb);
                $rootScope.$apply();
+               flush($timeout);
                expect(cb).toHaveBeenCalledWith(null, {hello: 'world'});
             })
          );
@@ -214,6 +215,48 @@ describe('service', function() {
             profileCreator(456, 'test2@test2.com', cb);
             flush($timeout);
             expect(cb).toHaveBeenCalledWith('noooooo');
+         })
+      );
+   });
+
+   describe('eventService', function() {
+      beforeEach(inject(function(eventService) {
+         eventService.setEvents({
+            '0':{
+               title:'title'
+            ,  state:'approved'
+            ,  start:'2014-01-17T13:30:00.000Z'
+            ,  end:'2014-01-17T14:30:00.000Z'
+            ,  patient_id:'test'
+            }
+         ,  '1':{
+               title:'title'
+            ,  state:'dr_pending'
+            ,  start:'2014-01-17T14:00:00.000Z'
+            ,  end:'2014-01-17T14:00:00.000Z'
+            ,  patient_id:'test2'
+            }
+         });
+      }));
+
+      it('should create an array of Event objects',
+         inject(function(eventService) {
+            expect(eventService.events()[0].key).toEqual('0');
+            expect(eventService.events()[0].title).toEqual('title');
+            expect(eventService.events()[0].start.getTime()).toEqual(new Date('2014-01-17T13:30:00.000Z').getTime());
+         })
+      );
+
+      it('should remove from event from list',
+         inject(function(eventService) {
+            eventService.setEvents({});
+            expect(eventService.events().length).toEqual(0);
+         })
+      );
+
+      it('should detect conflicts between events',
+         inject(function(eventService) {
+            expect(eventService.events()[0].conflict).toBe(true);
          })
       );
    });
