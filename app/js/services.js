@@ -49,6 +49,7 @@
             this.conflict = false;
          }
 
+         // given an appointment $id, check if a corresponding Event object exists
          function keyInEvents(k) {
             var idx = -1;
             for ( var i = 0; i < events.length; i++ ) {
@@ -60,6 +61,7 @@
             return idx;
          }
 
+         // given an appointment $id, return the corresponding Event object
          function eventForKey(key) {
             var idx = keyInEvents(key);
             if ( idx >= 0 ) {
@@ -68,6 +70,7 @@
             return {};
          }
 
+         // given an appointment object, update the corresponding Event object
          function updateEvent(obj) {
             var e = eventForKey(obj.$id);
             if ( e ) {
@@ -80,6 +83,7 @@
             return {};
          }
 
+         // check if a given Event object has times which overlap another in the list
          function checkForConflict(e) {
             var s1 = e.start.getTime();
             var e1 = e.end.getTime();
@@ -101,6 +105,7 @@
             }
          }
 
+         // update (or initialize) the event list given a $firebase list of appointments
          function setEvents(list) {
             // remove any events that are no longer in list:
             for ( var i = events.length-1; i >= 0; i-- ) {
@@ -121,6 +126,7 @@
                }
             });
 
+            // check events for conflicts:
             for ( var i = 0; i < events.length; i++ ) {
                checkForConflict(events[i]);
             }
@@ -204,7 +210,7 @@
       .factory('profileCreator', ['firebaseRef', '$timeout', function(firebaseRef, $timeout) {
          return function(id, email, callback) {
             firebaseRef('users/'+id).set({email: email, name: firstPartOfEmail(email)}, function(err) {
-
+               // initialize the user's "profile" object:
                firebaseRef('profiles/'+id).set({
                   name: firstPartOfEmail(email)
                ,  info: ''
